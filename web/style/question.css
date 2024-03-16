@@ -1,0 +1,22 @@
+.question-view {
+    border: 1px solid fuchsia;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    row-gap: 1em;
+}
+
+.question-prompt {
+    margin: 0;
+    padding: calc(1em - 5px);
+    border: 5px solid black;
+    border-radius: 1em;
+    background-color: black;
+
+    color: white;
+    text-align: center;
+
+    box-shadow: 5px 5px 20px -5px black;
+}
