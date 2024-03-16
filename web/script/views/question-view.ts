@@ -1,8 +1,12 @@
 import {Question} from "../data/question.js";
 import {DOM} from "../../DOM.js";
 import {ChoiceView} from "./choice-view.js";
+import {Observable} from "../data/observable";
+import {Observer} from "../data/interfaces/observer-interface";
+import {Choice} from "../data/choice.js";
+import {GameState} from "../data/game-state.js";
 
-export class QuestionView implements View<Question> {
+export class QuestionView implements ViewInterface, Observer<GameState> {
 
     private static template: string = `
         <div class="question-view">
@@ -10,70 +14,71 @@ export class QuestionView implements View<Question> {
         </div>
     `.trim();
 
-    private _fragment: DocumentFragment;
-    private _model: Question;
+    private _observable: Observable<GameState>
 
+    private _fragment: DocumentFragment;
     private _view: HTMLDivElement;
     private _prompt: HTMLHeadingElement;
     private _choices: ChoiceView[];
 
-    public get model() { return this._model;}
-    public set model(data: Question) { this.update(_ => data); }
+    public constructor(observable: Observable<GameState>) {
+        this._observable = observable;
 
-    public constructor(model: Question) {
         this._fragment = DOM.instanciate(QuestionView.template);
-        this._model = model;
-
         this._view = this._fragment.querySelector('.question-view')!;
         this._prompt = this._fragment.querySelector('.question-prompt')!
         this._choices = [];
-
-        this.update(_ => _);
     }
 
     public render(root: HTMLElement): void {
+        this._observable.subscribe(this);
+        this.observe(this._observable);
         root.append(this._fragment);
-    }
-
-    public update(fn: (model: Question) => Question): void {
-        this._model = fn(this._model);
-
-        if (this._prompt.innerText !== this._model.prompt) {
-            this._prompt.innerText = this._model.prompt;
-        }
-
-        const length = Math.max(this._model.choices.length, this._choices.length);
-        for (let index = 0; index < length; index++) {
-
-           const updatedModel = this._model.choices[index];
-           const choiceView = this._choices[index];
-
-           if (updatedModel && choiceView) {
-               choiceView.update(model => {
-                   model.message = updatedModel.message;
-                   return model;
-               });
-               continue;
-           }
-
-           if (updatedModel) {
-               const choiceView = new ChoiceView(updatedModel);
-               this._choices.push(choiceView);
-               choiceView.render(this._view);
-               continue;
-           }
-
-           if (choiceView) {
-               choiceView.destroy();
-               this._choices = this._choices.filter(view => view != choiceView);
-               continue;
-           }
-
-        }
     }
 
     public destroy(): void {
         this._view.remove();
+        this._observable.unsubscribe(this);
     }
+
+    public observe(observable: Observable<GameState>) {
+        this.update(observable);
+    }
+
+    private update(observable: Observable<GameState>): void {
+        const gamestate = observable.value;
+        const prompt = gamestate.prompt().value('');
+        const choices = gamestate.choices().value([]);
+
+        if (this._prompt.innerText !== prompt) {
+            this._prompt.innerText = prompt;
+        }
+
+        const length = Math.max(choices.length, this._choices.length);
+        for (let index = 0; index < length; index++) {
+
+            const updatedModel = choices[index];
+            const choiceView = this._choices[index];
+
+            if (updatedModel && choiceView) {
+                continue;
+            }
+
+            if (updatedModel) {
+                const choiceView = new ChoiceView(observable, index);
+                this._choices.push(choiceView);
+                choiceView.render(this._view);
+                continue;
+            }
+
+            if (choiceView) {
+                choiceView.destroy();
+                this._choices = this._choices.filter(view => view != choiceView);
+                continue;
+            }
+
+        }
+    }
+
 
 }

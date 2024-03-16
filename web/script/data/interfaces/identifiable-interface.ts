@@ -1,5 +1,5 @@
 import {Identifier} from "../identifier";
 
-export interface Identifiable {
+export interface IdentifiableInterface {
     readonly identifier: Identifier
 }

@@ -1,9 +1,9 @@
 import {Identifier} from "./identifier.js";
 import {Choice} from "./choice.js";
-import {Identifiable} from "./interfaces/identifiable.js";
+import {IdentifiableInterface} from "./interfaces/identifiable-interface";
 import {None, Option, Some} from "./option.js";
 
-export class Question implements Identifiable {
+export class Question implements IdentifiableInterface {
 
     public readonly identifier: Identifier;
     public prompt: string;
@@ -22,11 +22,7 @@ export class Question implements Identifiable {
         this.answer = answer;
     }
 
-    public static Test() {
-        console.log('Hello World!');
-    }
-
-    public static Create(prompt: string, choices: Array<Choice>, answer: Choice): Option<Question> {
+    public static create(prompt: string, choices: Array<Choice>, answer: Choice): Option<Question> {
         const isSolvable = !!choices.find(choice => choice === answer);
         if (!isSolvable) {
             return new None();

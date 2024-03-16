@@ -1,26 +1,12 @@
+import {Observer} from "../data/interfaces/observer-interface.js"
+import {Observable} from "../data/observable";
 import {Choice} from "../data/choice.js";
 import {DOM} from "../../DOM.js";
-import {Notifiable} from "../data/interfaces/notifiable.js";
-import {GlobalState} from "../global-state.js"
 import {Identifier} from "../data/identifier.js";
+import {GameState} from "../data/game-state.js";
+import {Some} from "../data/option.js";
 
-export class ChoiceViewModel {
-    public choiceIdentifier: Identifier;
-    public message: string;
-    public isSelected: boolean;
-
-    private constructor(choiceIdentifier: Identifier, message: string, isSelected: boolean) {
-        this.choiceIdentifier = choiceIdentifier;
-        this.message = message;
-        this.isSelected = isSelected
-    }
-
-    public static create(choice: Choice) {
-        return new ChoiceViewModel(choice.identifier, choice.message, false);
-    }
-}
-
-export class ChoiceView implements View<ChoiceViewModel>, Notifiable {
+export class ChoiceView implements ViewInterface, Observer<GameState> {
 
     private static _template: string = `
         <div class="choice-view">
@@ -28,74 +14,74 @@ export class ChoiceView implements View<ChoiceViewModel>, Notifiable {
         </div>
     `.trim();
 
-    private _fragment: DocumentFragment;
-    private _model: ChoiceViewModel;
+    private _observable: Observable<GameState>;
+    private _indexOfChoice: number;
 
+    private _fragment: DocumentFragment;
     private _view: HTMLDivElement;
     private _message: HTMLDivElement;
 
+    public constructor(observable: Observable<GameState>, indexOfChoice: number) {
+        this._observable = observable;
+        this._indexOfChoice = indexOfChoice;
 
-    public get model() { return this._model; }
-    public set model(data: ChoiceViewModel) { this.update(_ => data); }
-
-    public constructor(model: Choice) {
         this._fragment = DOM.instanciate(ChoiceView._template);
-        this._model = ChoiceViewModel.create(model);
-
         this._view = this._fragment.querySelector('.choice-view')!;
         this._message = this._fragment.querySelector('.choice-message')!;
+    }
 
-        this.update(_ => _);
+    private bindEvents(): void {
+        this._view.addEventListener('click', this.onclick);
+    }
+
+    private unbindEvents(): void {
+        this._view.removeEventListener('click', this.onclick);
     }
 
     public render(root: HTMLElement): void {
+        this._observable.subscribe(this);
+        this.observe(this._observable);
         root.append(this._fragment);
-    }
-
-    public update(fn: (model: ChoiceViewModel) => ChoiceViewModel): void {
-        this._model = fn(this._model);
-
-        if (this._message.innerText !== this._model.message) {
-            this._message.innerText = this._model.message;
-        }
-
-        if (this._model.isSelected && !this._view.classList.contains('.choice-selected')) {
-            this._view.classList.add('.choice-selected');
-        }
-
-        if (!this._model.isSelected && this._view.classList.contains('.choice-selected')) {
-            this._view.classList.remove('.choice-selected');
-        }
+        this.bindEvents();
     }
 
     public destroy(): void {
+        this.unbindEvents();
         this._view.remove();
+        this._observable.unsubscribe(this);
     }
 
-    receive(): void {
-         this.update(model => {
-             if (GlobalState.question.isNone()) {
-                 return model;
-             }
+    public observe(observable: Observable<GameState>): void {
+        const gamestate = observable.value;
+        const choice = gamestate.choice(this._indexOfChoice);
+        const selection = gamestate.selection;
 
-             const question = GlobalState.question.unwrap();
+        const message = choice.map(item => new Some(item.message)).value('');
+        const isSelected = choice.isSome()
+            && selection.isSome()
+            && choice.unwrap() === selection.unwrap();
 
-             for (const choice of question.choices) {
-                 if (this._model.choiceIdentifier !== choice.identifier) {
-                     continue;
-                 }
+        this.update(message, isSelected);
+    }
 
-                 this.model.message = choice.message;
-             }
+    private update(message: string, isSelected: boolean): void {
+        if (this._message.innerText !== message) {
+            this._message.innerText = message;
+        }
 
+        if (isSelected && !this._view.classList.contains('choice-selected')) {
+            this._view.classList.add('choice-selected');
+        }
 
-             this.model.isSelected = !!GlobalState.selection
-                 && GlobalState.selection.identifier === this.model.choiceIdentifier;
+        if (!isSelected && this._view.classList.contains('choice-selected')) {
+            this._view.classList.remove('choice-selected');
+        }
+    }
 
-
-
-             return this.model;
-         })
+    private onclick: (event: MouseEvent) => void = () => {
+        const gamestate = this._observable.value;
+        gamestate.selection = gamestate.choice(this._indexOfChoice);
+        this._observable.value = gamestate;
     }
 
 }

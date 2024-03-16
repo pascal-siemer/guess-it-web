@@ -1,45 +1,53 @@
-export type Option<T> = Some<T> | None;
+export type Option<T> = Some<T> | None<T>;
 
 export class Some<T> {
-    public readonly value: T;
+    public readonly _value: T;
 
     public constructor(value: T) {
-        this.value = value;
+        this._value = value;
     }
 
     public isSome(): this is Some<T> {
         return true;
     }
 
-    public isNone(): this is None {
+    public isNone(): this is None<T> {
         return false;
+    }
+
+    public value(_default: T): T {
+        return this._value;
     }
 
     public unwrap(): T {
-        return this.value;
+        return this._value;
     }
 
     public map<Out>(fn: (value: T) => Option<Out>): Option<Out> {
-        return fn(this.value);
+        return fn(this._value);
     }
 }
 
-export class None {
+export class None<T> {
     public constructor() {}
 
-    public isSome<T>(): this is Some<T> {
+    public isSome(): this is Some<T> {
         return false;
     }
 
-    public isNone(): this is None {
+    public isNone(): this is None<T> {
         return true;
     }
 
-    public unwrap<T>(): T {
+    public value(_default: T) {
+        return _default;
+    }
+
+    public unwrap(): T {
         throw new Error("cannot unwrap None!!");
     }
 
-    public map<In, Out>(fn: (value: In) => Option<Out>): Option<Out> {
+    public map<Out>(fn: (value: T) => Option<Out>): Option<Out> {
         return new None();
     }
 }

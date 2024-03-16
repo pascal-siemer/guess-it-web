@@ -1,7 +1,7 @@
 import {Identifier} from "./identifier.js";
-import {Identifiable} from "./interfaces/identifiable.js";
+import {IdentifiableInterface} from "./interfaces/identifiable-interface";
 
-export class Choice implements Identifiable {
+export class Choice implements IdentifiableInterface {
 
     public readonly identifier: Identifier;
     public message: string;
@@ -11,7 +11,7 @@ export class Choice implements Identifiable {
         this.message = message;
     }
 
-    public static Create(message: string): Choice {
+    public static create(message: string): Choice {
         return new Choice(
             Identifier.random(),
             message
