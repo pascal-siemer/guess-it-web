@@ -1,4 +1,6 @@
-export type Option<T> = Some<T> | None<T>;
+export type Option<T>
+    = Some<T>
+    | None<T>;
 
 export class Some<T> {
     public readonly _value: T;

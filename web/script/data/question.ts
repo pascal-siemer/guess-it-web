@@ -1,6 +1,6 @@
 import {Identifier} from "./identifier.js";
 import {Choice} from "./choice.js";
-import {IdentifiableInterface} from "./interfaces/identifiable-interface";
+import {IdentifiableInterface} from "./interfaces/identifiable-interface.js";
 import {None, Option, Some} from "./option.js";
 
 export class Question implements IdentifiableInterface {
@@ -23,11 +23,6 @@ export class Question implements IdentifiableInterface {
     }
 
     public static create(prompt: string, choices: Array<Choice>, answer: Choice): Option<Question> {
-        const isSolvable = !!choices.find(choice => choice === answer);
-        if (!isSolvable) {
-            return new None();
-        }
-
         const question = new Question(
             Identifier.random(),
             prompt,
@@ -35,6 +30,12 @@ export class Question implements IdentifiableInterface {
             answer
         );
 
-        return new Some(question);
+        return this.isSolvable(question)
+            ? new Some(question)
+            : new None();
+    }
+
+    public static isSolvable(question: Question): boolean {
+        return !!question.choices.find(choice => choice === question.answer);
     }
 }

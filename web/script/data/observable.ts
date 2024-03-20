@@ -1,4 +1,4 @@
-import {Observer} from "./interfaces/observer-interface";
+import {Observer} from "./interfaces/observer-interface.js";
 
 export class Observable<Value> {
 
@@ -32,7 +32,7 @@ export class Observable<Value> {
         );
     }
 
-    private notify(): void {
+    public notify(): void {
         for (const subscriber of this._subscribers) {
             subscriber.observe(this);
         }

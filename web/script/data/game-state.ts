@@ -1,7 +1,6 @@
 import {Option, Some, None} from "./option.js";
 import {Question} from "./question.js";
 import {Choice} from "./choice.js";
-import {Observable} from "./observable";
 
 export class GameState {
     public question: Option<Question>;
@@ -14,7 +13,7 @@ export class GameState {
 
     public static init(): GameState {
         const prompt = "Ist dieser Satz falsch?";
-        const answer = Choice.create("Err ääähm ehhh.... *explodion!");
+        const answer = Choice.create("Err ääähm ehhh.... *explosion!");
         const choices = [
             Choice.create("Ja"),
             Choice.create("Nein"),
