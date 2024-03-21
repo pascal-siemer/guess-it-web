@@ -19,6 +19,7 @@ export class Reactive<Instance> {
 
     public update(fn: (instance: Instance) => void): void {
         fn(this._instance);
+        this.report();
     }
 
     public watch(observe: Observe<Instance>): void {
@@ -28,5 +29,11 @@ export class Reactive<Instance> {
 
     public ignore(observe: Observe<Instance>) {
         this._subscribers.filter(fn => fn !== observe);
+    }
+
+    private report() {
+        for (const observe of this._subscribers) {
+            observe(this._instance);
+        }
     }
 }
