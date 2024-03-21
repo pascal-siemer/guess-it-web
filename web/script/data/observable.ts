@@ -13,7 +13,13 @@ export class Observable<Value> {
         return new Observable(value);
     }
 
-    public get value() {
+
+    public get value() {    
+//  public get value(this: unknown) {
+//      if (this.observe) {
+//          subscrive(this);
+//      }
+        
         return this._value;
     }
 
