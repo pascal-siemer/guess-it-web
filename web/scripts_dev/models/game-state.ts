@@ -1,6 +1,6 @@
-import {Option, Some, None} from "../mechanics/option";
-import {Question} from "./question";
-import {Choice} from "./choice";
+import {Option, Some, None} from "../mechanics/option.js";
+import {Question} from "./question.js";
+import {Choice} from "./choice.js";
 
 export class GameState {
     public question: Option<Question>;

@@ -1,9 +1,9 @@
-import {HubConnection, HubConnectionBuilder} from "../../packages/signalr/index";
-import {GameState} from "../models/game-state";
-import {Observable} from "../mechanics/observable";
-import {Question} from "../models/question";
-import {Option, None, Some} from "../mechanics/option";
-import {Choice} from "../models/choice";
+import {HubConnection, HubConnectionBuilder} from "../../packages/signalr/index.js";
+import {GameState} from "../models/game-state.js";
+import {Observable} from "../mechanics/observable.js";
+import {Question} from "../models/question.js";
+import {Option, None, Some} from "../mechanics/option.js";
+import {Choice} from "../models/choice.js";
 
 
 

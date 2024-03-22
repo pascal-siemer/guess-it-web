@@ -1,5 +1,5 @@
-import {Identifier} from "./identifier";
-import {IdentifiableInterface} from "../interfaces/identifiable-interface";
+import {Identifier} from "./identifier.js";
+import {IdentifiableInterface} from "../interfaces/identifiable-interface.js";
 
 export class Choice implements IdentifiableInterface {
 

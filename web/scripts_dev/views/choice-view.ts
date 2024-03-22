@@ -1,8 +1,8 @@
-import {Observer} from "../interfaces/observer-interface";
-import {Observable} from "../mechanics/observable";
-import {DOM} from "../DOM";
-import {GameState} from "../models/game-state";
-import {Some} from "../mechanics/option";
+import {Observer} from "../interfaces/observer-interface.js";
+import {Observable} from "../mechanics/observable.js";
+import {DOM} from "../DOM.js";
+import {GameState} from "../models/game-state.js";
+import {Some} from "../mechanics/option.js";
 
 export class ChoiceView implements ViewInterface, Observer<GameState> {
 

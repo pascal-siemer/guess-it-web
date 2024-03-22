@@ -1,4 +1,4 @@
-import {UUID} from "./uuid";
+import {UUID} from "./uuid.js";
 
 
 export class Identifier {

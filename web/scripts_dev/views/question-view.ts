@@ -1,8 +1,8 @@
-import {DOM} from "../DOM";
-import {ChoiceView} from "./choice-view";
-import {Observable} from "../mechanics/observable";
-import {Observer} from "../interfaces/observer-interface";
-import {GameState} from "../models/game-state";
+import {DOM} from "../DOM.js";
+import {ChoiceView} from "./choice-view.js";
+import {Observable} from "../mechanics/observable.js";
+import {Observer} from "../interfaces/observer-interface.js";
+import {GameState} from "../models/game-state.js";
 
 export class QuestionView implements ViewInterface, Observer<GameState> {
 
