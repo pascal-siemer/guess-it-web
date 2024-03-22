@@ -1,7 +1,7 @@
-import {Identifier} from "./identifier.js";
-import {Choice} from "./choice.js";
-import {IdentifiableInterface} from "./interfaces/identifiable-interface.js";
-import {None, Option, Some} from "./option.js";
+import {Identifier} from "./identifier";
+import {Choice} from "./choice";
+import {IdentifiableInterface} from "../interfaces/identifiable-interface";
+import {None, Option, Some} from "../mechanics/option";
 
 export class Question implements IdentifiableInterface {
 

@@ -1,24 +1,24 @@
-import * as signalR from "@microsoft/signalr"
-import {GameState} from "../data/game-state.js";
-import {Observable} from "../data/observable.js";
-import {Question} from "../data/question.js";
-import {Option, None, Some} from "../data/option.js";
-import {Choice} from "../data/choice.js";
+import {HubConnection, HubConnectionBuilder} from "../../packages/signalr/index";
+import {GameState} from "../models/game-state";
+import {Observable} from "../mechanics/observable";
+import {Question} from "../models/question";
+import {Option, None, Some} from "../mechanics/option";
+import {Choice} from "../models/choice";
 
 
 
 export class GameStateHub {
-    private _connection: signalR.HubConnection;
+    private _connection: HubConnection;
     private _gamestate: Observable<GameState>;
 
-    private constructor(connection: signalR.HubConnection, gamestate: Observable<GameState>) {
+    private constructor(connection: HubConnection, gamestate: Observable<GameState>) {
         this._connection = connection;
         this._gamestate = gamestate;
         this.registerMethods();
     }
 
     public static async connect(url: string, gamestate: Observable<GameState>): Promise<GameStateHub> {
-        const connection = new signalR.HubConnectionBuilder()
+        const connection = new HubConnectionBuilder()
             .withUrl(url)
             .build();
 

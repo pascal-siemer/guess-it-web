@@ -22,9 +22,8 @@ export class Reactive<Instance> {
         this.report();
     }
 
-    public watch(observe: Observe<Instance>): void {
-        const subscriber = [this, observe];
-        this._subscribers.push(subscriber);
+    public watch(observe: Observe<Instance>): void {;
+        this._subscribers.push(observe);
     }
 
     public ignore(observe: Observe<Instance>) {

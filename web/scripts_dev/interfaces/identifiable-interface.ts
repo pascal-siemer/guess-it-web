@@ -1,4 +1,4 @@
-import {Identifier} from "../identifier.js";
+import {Identifier} from "../models/identifier";
 
 export interface IdentifiableInterface {
     readonly identifier: Identifier

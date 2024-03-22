@@ -1,4 +1,4 @@
-import {Observer} from "./interfaces/observer-interface.js";
+import {Observer} from "../interfaces/observer-interface";
 
 export class Observable<Value> {
 
