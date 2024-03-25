@@ -3,6 +3,8 @@ import {Choice} from "./choice.js";
 import {IdentifiableInterface} from "../interfaces/identifiable-interface.js";
 import {None, Option, Some} from "../mechanics/option.js";
 
+// falls Fabian drüberschaut, IdentifiableInterface sollte eig. Identifiable heißen. Das scheint sich beim Refactoren der Dateien geändert zu haben..
+
 export class Question implements IdentifiableInterface {
 
     public readonly identifier: Identifier;
